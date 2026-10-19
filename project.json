@@ -1,0 +1,13 @@
+{
+  "name": "1.2 – The Waiting Interface",
+  "entry": "src/main.js",
+  "runtime": "browser-js",
+  "idea": "waiting-interface",
+  "guidelineRevision": "2026-08-06",
+  "helperGroups": [
+    "project.createWaitingIndicator",
+    "project.createMetricLogger",
+    "VoiceManager",
+    "context.wait"
+  ]
+}
