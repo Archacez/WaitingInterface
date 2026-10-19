@@ -1,0 +1,8 @@
+{
+  "condition": "all",
+  "expectedDelayMs": 4000,
+  "actualDelayMs": 3500,
+  "fillerText": "I am still working on that. Thank you for waiting.",
+  "fillerInsideDelay": true,
+  "debug": true
+}
