@@ -1,4 +1,5 @@
 const config = require("./config.json");
+const forms = require("./questionnaire.js");
 
 // All 6 orders of the 3 conditions. Participant ID picks one (ID 1 -> order 1, ..., ID 7 -> order 1 again).
 const ORDERS = [
@@ -126,10 +127,18 @@ function showTask(context, trialNumber, totalTrials) {
   });
 }
 
-// PARTNER B: replace this with the post-wait form.
-// Return an object of measures, e.g. { estimated_delay_ms, estimation_error_ms, frustration, responsiveness }
+// Post-wait form: the estimated wait (compared with the measured wait), then NASA-TLX and SUS.
+// The questionnaire is taller than the other screens, so its panel scrolls.
 async function collectResponses(context, trial) {
-  return {};
+  const seconds = await showScreen(context, (host, done) => forms.askEstimate(host).then(done));
+  const estimatedMs = Math.round(seconds * 1000);
+  const ratings = await showScreen(context, (host, done) => {
+    host.style.maxHeight = "calc(100% - 48px)";
+    host.style.overflowY = "auto";
+    host.style.boxSizing = "border-box";
+    forms.askConditionQuestionnaire(host, "About request " + trial.trialNumber).then(done);
+  });
+  return { estimated_delay_ms: estimatedMs, estimation_error_ms: estimatedMs - trial.actualMs, ...ratings };
 }
 
 function showThanks(context) {

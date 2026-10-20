@@ -1,0 +1,82 @@
+{
+  "sets": {
+    "A": [
+      {
+        "id": "A1",
+        "type": "how-to",
+        "question": "How do I keep a houseplant alive?",
+        "reply": "Most houseplants need bright, indirect light and water only when the top inch of soil feels dry. Overwatering is the most common problem, so check the soil before you water."
+      },
+      {
+        "id": "A2",
+        "type": "explain",
+        "question": "Why is the sky blue?",
+        "reply": "Sunlight contains every color, but air scatters the shorter blue wavelengths much more than the red ones. That scattered blue light reaches your eyes from every direction, so the sky looks blue."
+      },
+      {
+        "id": "A3",
+        "type": "recommend",
+        "question": "What is a good snack for studying?",
+        "reply": "Try something with protein and fiber, like apple slices with peanut butter or a handful of nuts. These keep your energy steady for longer than candy or chips do."
+      },
+      {
+        "id": "A4",
+        "type": "plan",
+        "question": "How should I plan a weekend trip on a budget?",
+        "reply": "Pick a place you can reach by car or bus, and book your stay early for better prices. Then plan one or two free activities, such as a hike or a museum day."
+      }
+    ],
+    "B": [
+      {
+        "id": "B1",
+        "type": "how-to",
+        "question": "How do I get rid of hiccups?",
+        "reply": "Try holding your breath for about ten seconds, or slowly sip a glass of cold water. Most hiccups also stop on their own within a few minutes, so try to stay relaxed."
+      },
+      {
+        "id": "B2",
+        "type": "explain",
+        "question": "Why do leaves change color in the fall?",
+        "reply": "As the days get shorter, trees stop making chlorophyll, the green pigment in their leaves. Once the green fades, the yellow and orange pigments that were there all along become visible."
+      },
+      {
+        "id": "B3",
+        "type": "recommend",
+        "question": "What is a good way to relax after a long day?",
+        "reply": "A short walk outside or ten minutes of stretching can help your body unwind. Many people also find that putting their phone away an hour before bed helps them rest better."
+      },
+      {
+        "id": "B4",
+        "type": "plan",
+        "question": "How should I plan a small birthday party?",
+        "reply": "Start by choosing a date and a short guest list, then pick one simple theme or activity. Plan easy food that can be made ahead, so you can enjoy the party too."
+      }
+    ],
+    "C": [
+      {
+        "id": "C1",
+        "type": "how-to",
+        "question": "How do I remove a coffee stain from a shirt?",
+        "reply": "Rinse the stain from the back with cold water as soon as you can, then rub in a little liquid detergent. Let it sit for a few minutes before washing it as usual."
+      },
+      {
+        "id": "C2",
+        "type": "explain",
+        "question": "Why does bread go stale?",
+        "reply": "Bread goes stale mostly because the starch inside it slowly hardens and pushes out moisture. Keeping it sealed at room temperature slows this down, while the fridge actually speeds it up."
+      },
+      {
+        "id": "C3",
+        "type": "recommend",
+        "question": "What is a good hobby to pick up?",
+        "reply": "Cooking is a good choice because you can start with simple recipes and improve quickly. Drawing and running are also easy to begin, since they need very little equipment."
+      },
+      {
+        "id": "C4",
+        "type": "plan",
+        "question": "How should I plan a study schedule for finals?",
+        "reply": "List each exam date, then work backward and give the hardest subjects the most sessions. Keep each session under an hour, with short breaks, and save the last day for review."
+      }
+    ]
+  }
+}

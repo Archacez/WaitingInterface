@@ -1,0 +1,39 @@
+{
+  "estimate": {
+    "prompt": "About how many seconds did you wait after sending your request?",
+    "hint": "Your best guess is fine. You can use decimals.",
+    "min": 0,
+    "max": 120
+  },
+  "tlx": {
+    "source": "NASA Task Load Index (Hart and Staveland, 1988), raw (unweighted) scoring",
+    "intro": "Think about the request you just sent and the wait that followed. For each item, click the box that best matches your experience.",
+    "steps": 21,
+    "items": [
+      { "key": "mental", "label": "Mental demand", "question": "How mentally demanding was the task?", "low": "Very low", "high": "Very high" },
+      { "key": "physical", "label": "Physical demand", "question": "How physically demanding was the task?", "low": "Very low", "high": "Very high" },
+      { "key": "temporal", "label": "Temporal demand", "question": "How hurried or rushed was the pace of the task?", "low": "Very low", "high": "Very high" },
+      { "key": "performance", "label": "Performance", "question": "How successful were you in accomplishing what you were asked to do?", "low": "Perfect", "high": "Failure" },
+      { "key": "effort", "label": "Effort", "question": "How hard did you have to work to accomplish your level of performance?", "low": "Very low", "high": "Very high" },
+      { "key": "frustration", "label": "Frustration", "question": "How insecure, discouraged, irritated, stressed, and annoyed were you?", "low": "Very low", "high": "Very high" }
+    ]
+  },
+  "sus": {
+    "source": "System Usability Scale (Brooke, 1996)",
+    "intro": "In these statements, \"the system\" means the assistant you just used. Choose one answer for each statement.",
+    "low": "Strongly disagree",
+    "high": "Strongly agree",
+    "items": [
+      "I think that I would like to use this system frequently.",
+      "I found the system unnecessarily complex.",
+      "I thought the system was easy to use.",
+      "I think that I would need the support of a technical person to be able to use this system.",
+      "I found the various functions in this system were well integrated.",
+      "I thought there was too much inconsistency in this system.",
+      "I would imagine that most people would learn to use this system very quickly.",
+      "I found the system very cumbersome to use.",
+      "I felt very confident using the system.",
+      "I needed to learn a lot of things before I could get going with this system."
+    ]
+  }
+}
