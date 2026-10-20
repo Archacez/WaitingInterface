@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Local test</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, sans-serif; color: #183322; background: #eef1f0; }
+    .layout { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 12px; padding: 12px; height: 100vh; }
+    #stage { position: relative; overflow: hidden; border-radius: 10px; background: linear-gradient(#55707a, #2f4249); }
+    #stage .overlay { position: absolute; }
+    .agent { position: absolute; top: 12%; left: 50%; transform: translateX(-50%); text-align: center; color: white; }
+    .agent .face { width: 120px; height: 150px; margin: 0 auto; border-radius: 50% 50% 45% 45%; background: #d9c2ad; }
+    .agent .name { margin-top: 6px; font-size: 13px; opacity: 0.8; }
+    #speech { max-width: 420px; margin-top: 10px; padding: 8px 12px; border-radius: 10px; background: rgba(255,255,255,0.9); color: #183322; font-size: 14px; }
+    .tag { position: absolute; top: 8px; left: 10px; font-size: 12px; color: white; opacity: 0.7; }
+    aside { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+    .panel { padding: 12px; border-radius: 10px; background: white; }
+    .controls { display: grid; gap: 8px; }
+    .controls label { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 14px; }
+    .row { display: flex; gap: 8px; }
+    .log-panel { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+    .log-panel h2, .panel h2 { margin: 0 0 8px; font-size: 14px; }
+    #log { flex: 1; overflow-y: auto; margin: 0; padding: 0; list-style: none; font: 12px/1.45 ui-monospace, monospace; }
+    #log li { padding: 2px 0; border-bottom: 1px solid #eef1f0; word-break: break-word; }
+    #log .metric { color: #183322; }
+    #log .speech { color: #4a5a8a; }
+    #log .info { color: #6b7a75; }
+    #log .error { color: #b3261e; white-space: pre-wrap; }
+    #container:empty::after { content: "(empty)"; opacity: 0.5; font-size: 12px; }
+    .button { padding: 6px 14px; border-radius: 6px; border: 1px solid #183322; background: white; color: #183322; font: inherit; cursor: pointer; }
+    .button-primary { background: #1f6f4a; border-color: #1f6f4a; color: white; }
+    .button:disabled { opacity: 0.45; cursor: default; }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <main id="stage">
+      <div class="tag">Scene stand-in</div>
+      <div class="agent">
+        <div class="face"></div>
+        <div class="name">Agent (test placeholder)</div>
+        <div id="speech" hidden></div>
+      </div>
+    </main>
+    <aside>
+      <section class="panel controls">
+        <div class="row">
+          <button id="run" class="button button-primary" type="button">Run</button>
+          <button id="stop" class="button" type="button">Stop</button>
+          <button id="copy" class="button" type="button">Copy recorded values</button>
+        </div>
+        <label>Speed
+          <select id="speed">
+            <option value="real">Real time</option>
+            <option value="fast">Fast (shortened waits)</option>
+          </select>
+        </label>
+        <label>Condition
+          <select id="condition">
+            <option value="">As in config.json</option>
+            <option value="all">all</option>
+            <option value="no_indicator">no_indicator</option>
+            <option value="verbal_filler">verbal_filler</option>
+            <option value="progress_ring">progress_ring</option>
+          </select>
+        </label>
+        <label>Read agent lines aloud (real time only)
+          <input id="voice" type="checkbox">
+        </label>
+      </section>
+      <section class="panel log-panel">
+        <h2>Recorded values and events</h2>
+        <ul id="log"></ul>
+      </section>
+      <section class="panel">
+        <h2>Runner container</h2>
+        <div id="container"></div>
+      </section>
+    </aside>
+  </div>
+  <script src="harness.js"></script>
+</body>
+</html>
