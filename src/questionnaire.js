@@ -76,45 +76,69 @@ function scoreSus(sus) {
   return sum * 2.5;
 }
 
+// on-screen keys instead of a text field: keystrokes do not reach fields
+// mounted over the eEVA scene, and every participant enters the estimate the same way
+const KEYS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "back"];
+const MAX_CHARS = 6;
+
 function askEstimate(host) {
   return new Promise((resolve) => {
     const { prompt, hint, min, max } = items.estimate;
     host.replaceChildren();
+    let text = "";
 
-    const input = el("input", "", "width:120px; padding:6px 8px; font:inherit;");
-    input.type = "number";
-    input.min = String(min);
-    input.max = String(max);
-    input.step = "any";
-    input.inputMode = "decimal";
+    const display = el(
+      "div",
+      "",
+      `width:120px; min-height:36px; padding:6px 8px; border:1px solid ${INK}; border-radius:4px; ` +
+        "box-sizing:border-box; font-size:20px; text-align:right;"
+    );
+    display.setAttribute("aria-live", "polite");
 
     const next = button("Continue", true);
-    next.disabled = true;
-
     const valid = () => {
-      const v = Number(input.value);
-      return input.value.trim() !== "" && Number.isFinite(v) && v >= min && v <= max;
+      const v = Number(text);
+      return text !== "" && text !== "." && Number.isFinite(v) && v >= min && v <= max;
     };
-    const submit = () => {
-      if (valid()) resolve(Number(input.value));
-    };
-    input.addEventListener("input", () => {
+    const update = () => {
+      display.textContent = text;
       next.disabled = !valid();
+    };
+    next.addEventListener("click", () => {
+      if (valid()) resolve(Number(text));
     });
-    input.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") submit();
-    });
-    next.addEventListener("click", submit);
 
-    const row = el("div", "", "display:flex; align-items:center; gap:8px; margin-top:8px;");
-    row.append(input, el("span", "seconds"), next);
+    const pad = el("div", "", "display:grid; grid-template-columns:repeat(3,56px); gap:4px;");
+    for (const key of KEYS) {
+      const box = el(
+        "button",
+        key === "back" ? "⌫" : key,
+        `min-height:40px; padding:0; border:1px solid ${INK}; border-radius:4px; ` +
+          `background:white; color:${INK}; font:inherit; font-size:18px; cursor:pointer;`
+      );
+      box.type = "button";
+      if (key === "back") box.setAttribute("aria-label", "Delete last digit");
+      box.addEventListener("click", () => {
+        if (key === "back") text = text.slice(0, -1);
+        else if (!(key === "." && text.includes(".")) && text.length < MAX_CHARS) text += key;
+        update();
+      });
+      pad.appendChild(box);
+    }
+
+    const reading = el("div", "", "display:flex; align-items:center; gap:8px;");
+    reading.append(display, el("span", "seconds"));
+    const side = el("div", "", "display:flex; flex-direction:column; align-items:flex-start; gap:12px;");
+    side.append(reading, next);
+    const body = el("div", "", "display:flex; align-items:flex-start; gap:16px; margin-top:8px;");
+    body.append(pad, side);
+
     host.append(
       el("p", prompt, "margin:0; font-weight:600;"),
       el("p", hint, "margin:4px 0 0; font-size:13px; opacity:0.8;"),
-      row
+      body
     );
-    // the host is mounted after this returns, so focus has to wait a tick
-    setTimeout(() => input.focus(), 0);
+    update();
   });
 }
 
