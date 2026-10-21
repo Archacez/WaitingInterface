@@ -1,7 +1,7 @@
 {
-  "condition": "all",
+  "condition": "no_indicator",
   "expectedDelayMs": 4000,
-  "actualDelayMs": 3500,
+  "actualDelayMs": 8000,
   "fillerText": "I am still working on that. Thank you for waiting.",
   "fillerInsideDelay": true,
   "debug": true
