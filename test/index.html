@@ -28,6 +28,7 @@
     #log .speech { color: #4a5a8a; }
     #log .info { color: #6b7a75; }
     #log .error { color: #b3261e; white-space: pre-wrap; }
+    body.hide-values .log-panel { visibility: hidden; }
     #container:empty::after { content: "(empty)"; opacity: 0.5; font-size: 12px; }
     .button { padding: 6px 14px; border-radius: 6px; border: 1px solid #183322; background: white; color: #183322; font: inherit; cursor: pointer; }
     .button-primary { background: #1f6f4a; border-color: #1f6f4a; color: white; }
@@ -68,6 +69,9 @@
         </label>
         <label>Read agent lines aloud (real time only)
           <input id="voice" type="checkbox">
+        </label>
+        <label>Hide recorded values (participant at the screen)
+          <input id="hide-values" type="checkbox">
         </label>
       </section>
       <section class="panel log-panel">

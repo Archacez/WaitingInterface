@@ -15,6 +15,7 @@ Press **Run** on the page. Every Run reads the current `src/` files, so after an
 - **Condition:** overrides `condition` for that run only; `config.json` is not changed.
 - **Read agent lines aloud:** uses a voice installed on this computer. Without one, agent lines are shown and timed but silent.
 - **Recorded values and events:** every `metrics.record` call, every agent line, and any error. **Copy recorded values** puts them on the clipboard as JSON.
+- **Hide recorded values:** hides that list while a participant uses the page, since it shows the measured wait before the estimate question. Copy recorded values still works.
 
 ## Differences from eEVA
 

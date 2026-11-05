@@ -1,5 +1,6 @@
 const config = require("./config.json");
 const forms = require("./questionnaire.js");
+const questions = require("./questions.json");
 
 // All 6 orders of the 3 conditions. Participant ID picks one (ID 1 -> order 1, ..., ID 7 -> order 1 again).
 const ORDERS = [
@@ -22,7 +23,15 @@ function getConditionOrder(participantId) {
   return ORDERS[index];
 }
 
-async function runWait(context, condition) {
+// The request's position picks the set and the participant number picks the question in it,
+// so no condition is always paired with the same question
+function pickQuestion(participantId, trialNumber) {
+  const names = Object.keys(questions.sets);
+  const set = questions.sets[names[(trialNumber - 1) % names.length]];
+  return set[(parseInt(participantId, 10) - 1) % set.length];
+}
+
+async function runWait(context, condition, metrics) {
   const host = createHost();
   // Same as the template: the helper is always created, but no panel is mounted for no_indicator
   if (condition === "progress_ring") {
@@ -35,13 +44,15 @@ async function runWait(context, condition) {
   waitUi.start();
 
   if (condition === "verbal_filler") {
+    // The filler starts with the wait and plays once. Its length depends on the voice,
+    // so the moment it ends is logged against the start of the wait.
+    const filler = context.agent.speak(config.fillerText).then(() => {
+      metrics.record("filler_end_ms", Math.round(performance.now() - startedAt));
+    });
     if (config.fillerInsideDelay) {
-      await Promise.all([
-        context.agent.speak(config.fillerText),
-        context.wait(config.actualDelayMs),
-      ]);
+      await Promise.all([filler, context.wait(config.actualDelayMs)]);
     } else {
-      await context.agent.speak(config.fillerText);
+      await filler;
       await context.wait(config.actualDelayMs);
     }
   } else {
@@ -120,10 +131,21 @@ function showInstructions(context, totalTrials) {
 }
 
 // The constant task: identical in every condition
-function showTask(context, trialNumber, totalTrials) {
+function showTask(context, trialNumber, totalTrials, question) {
   return showScreen(context, (host, done) => {
     addText(host, "Request " + trialNumber + " of " + totalTrials + ". Press the button to send your request to the assistant.");
+    addText(host, "You: " + question.question);
     addButton(host, "Send request", () => done());
+  });
+}
+
+// The reply appears the moment the wait ends; text rather than speech keeps that moment
+// the same in every condition and needs no sound
+function showReply(context, question) {
+  return showScreen(context, (host, done) => {
+    addText(host, "You: " + question.question);
+    addText(host, "Assistant: " + question.reply);
+    addButton(host, "Continue", () => done());
   });
 }
 
@@ -205,12 +227,18 @@ module.exports.run = async function run(context) {
     metrics.record("configured_delay_ms", config.actualDelayMs);
     metrics.record("expected_delay_ms", config.expectedDelayMs);
 
+    const question = pickQuestion(participantId, trialNumber);
+    metrics.record("question_id", question.id);
+
     current.stage = "task";
-    await showTask(context, trialNumber, total);
+    await showTask(context, trialNumber, total, question);
 
     current.stage = "wait";
-    const actualMs = await runWait(context, condition);
+    const actualMs = await runWait(context, condition, metrics);
     metrics.record("actual_elapsed_ms", actualMs);
+
+    current.stage = "reply";
+    await showReply(context, question);
 
     current.stage = "form";
     const responses = await collectResponses(context, { condition, trialNumber, actualMs });

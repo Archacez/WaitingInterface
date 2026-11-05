@@ -1,8 +1,8 @@
 {
   "condition": "no_indicator",
-  "expectedDelayMs": 4000,
+  "expectedDelayMs": 8000,
   "actualDelayMs": 8000,
-  "fillerText": "I am still working on that. Thank you for waiting.",
+  "fillerText": "Hmm, let me think.",
   "fillerInsideDelay": true,
   "debug": true
 }

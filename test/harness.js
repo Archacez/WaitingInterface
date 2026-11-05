@@ -304,6 +304,10 @@ async function run() {
 // the voice list loads asynchronously; asking early gives it time before the first Run
 if ("speechSynthesis" in window) speechSynthesis.getVoices();
 
+// the list shows the measured wait before the participant is asked to estimate it
+$("hide-values").addEventListener("change", (event) => {
+  document.body.classList.toggle("hide-values", event.target.checked);
+});
 $("run").addEventListener("click", run);
 $("stop").addEventListener("click", stop);
 $("copy").addEventListener("click", async () => {
