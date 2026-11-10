@@ -1,14 +1,14 @@
 {
   "estimate": {
-    "prompt": "About how many seconds did you wait after sending your request?",
+    "prompt": "In this part, about how many seconds did you usually wait for a reply after sending a question?",
     "hint": "Your best guess is fine. You can use decimals.",
     "min": 0,
     "max": 120
   },
   "tlx": {
     "source": "NASA Task Load Index (Hart and Staveland, 1988), raw (unweighted) scoring",
-    "intro": "Think about the request you just sent and the wait that followed. For each item, click the box that best matches your experience.",
-    "steps": 21,
+    "intro": "Think about this part of the conversation: asking your questions and waiting for the replies. For each item, choose the number that best matches your experience.",
+    "steps": 7,
     "items": [
       { "key": "mental", "label": "Mental demand", "question": "How mentally demanding was the task?", "low": "Very low", "high": "Very high" },
       { "key": "physical", "label": "Physical demand", "question": "How physically demanding was the task?", "low": "Very low", "high": "Very high" },
@@ -18,9 +18,16 @@
       { "key": "frustration", "label": "Frustration", "question": "How insecure, discouraged, irritated, stressed, and annoyed were you?", "low": "Very low", "high": "Very high" }
     ]
   },
+  "continue": {
+    "intro": "One last question about this part.",
+    "question": "If the assistant always responded the way it did in this part, how willing would you be to keep using it?",
+    "steps": 7,
+    "low": "Not at all willing",
+    "high": "Very willing"
+  },
   "sus": {
     "source": "System Usability Scale (Brooke, 1996)",
-    "intro": "In these statements, \"the system\" means the assistant you just used. Choose one answer for each statement.",
+    "intro": "In these statements, \"the system\" means the assistant as it was in this part. Choose one answer for each statement.",
     "low": "Strongly disagree",
     "high": "Strongly agree",
     "items": [

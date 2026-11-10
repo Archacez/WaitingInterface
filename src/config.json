@@ -1,8 +1,16 @@
 {
-  "condition": "no_indicator",
+  "condition": "all",
+  "requestsPerCondition": 4,
   "expectedDelayMs": 8000,
   "actualDelayMs": 8000,
-  "fillerText": "Hmm, let me think.",
+  "fillerTexts": [
+    "Hmm, let me think.",
+    "Let me look into that.",
+    "One moment, please.",
+    "Let me see."
+  ],
   "fillerInsideDelay": true,
-  "debug": true
+  "greetingText": "Hello. I am ready for your questions.",
+  "replyMaxMs": 30000,
+  "maxParticipants": 24
 }
