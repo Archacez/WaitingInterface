@@ -12,5 +12,6 @@
   "fillerInsideDelay": true,
   "greetingText": "Hello. I am ready for your questions.",
   "replyMaxMs": 30000,
-  "maxParticipants": 24
+  "maxParticipants": 24,
+  "questionnaires": "app"
 }

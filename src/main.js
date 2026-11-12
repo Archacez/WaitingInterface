@@ -190,7 +190,9 @@ function addTurn(host, speaker, text) {
 // Filled in by the experimenter before the participant sits down: the number decides the
 // order of conditions, so it comes from the schedule, not from the participant.
 // Nothing is preselected, because a default left unchanged would repeat an order.
-function askParticipantId(context) {
+// The same screen sets where the questionnaires are answered: on this screen, or in an
+// external survey on the participant's own device. Resolves with { id, questionnaires }.
+function askSetup(context) {
   return showScreen(context, (host, done) => {
     addText(host, "Experimenter setup", "font-weight:600;");
     addText(host, "Select the participant number from the schedule, then hand over the laptop on the next screen.");
@@ -207,8 +209,20 @@ function askParticipantId(context) {
       select.appendChild(option);
     }
     host.appendChild(select);
+
+    const place = document.createElement("select");
+    place.style.cssText = select.style.cssText;
+    for (const [value, label] of [["app", "Questionnaires on this laptop"], ["external", "Questionnaires in the separate survey"]]) {
+      const option = document.createElement("option");
+      option.value = value;
+      option.textContent = label;
+      place.appendChild(option);
+    }
+    place.value = config.questionnaires === "external" ? "external" : "app";
+    host.appendChild(place);
+
     const next = addButton(host, "Continue", () => {
-      if (select.value) done(select.value);
+      if (select.value) done({ id: select.value, questionnaires: place.value });
     });
     next.disabled = true;
     const note = addText(host, "", "margin:12px 0 0; font-size:14px;");
@@ -278,16 +292,38 @@ function showReply(context, progress, question, record) {
 
 // Post-part form: the estimated wait (compared with the measured waits), then NASA-TLX and SUS.
 // The questionnaire is taller than the other screens, so its panel scrolls.
+// With external questionnaires every question, the estimate included, is answered in the
+// survey, so all answers of a participant sit in one place. This screen then only holds
+// the session until the participant is back, and nothing is returned.
 async function collectResponses(context, part) {
+  if (part.questionnaires === "external") {
+    await showSurveyHandover(context, part.partNumber, part.totalParts);
+    return {};
+  }
   const seconds = await showScreen(context, (host, done) => forms.askEstimate(host).then(done));
   const estimatedMs = Math.round(seconds * 1000);
+  const estimate = { estimated_delay_ms: estimatedMs, estimation_error_ms: estimatedMs - part.actualMs };
   const ratings = await showScreen(context, (host, done) => {
     host.style.maxHeight = "calc(100% - 48px)";
     host.style.overflowY = "auto";
     host.style.width = "min(720px,calc(100% - 48px))";
     forms.askConditionQuestionnaire(host, "About part " + part.partNumber).then(done);
   });
-  return { estimated_delay_ms: estimatedMs, estimation_error_ms: estimatedMs - part.actualMs, ...ratings };
+  return { ...estimate, ...ratings };
+}
+
+function showSurveyHandover(context, partNumber, totalParts) {
+  return showScreen(context, (host, done) => {
+    addText(host, "Part " + partNumber + " is finished.", "font-weight:600;");
+    addText(host, "Please answer the questions about this part in the survey now.");
+    addText(
+      host,
+      partNumber < totalParts
+        ? "When the survey asks you to start part " + (partNumber + 1) + ", press Continue here."
+        : "When you have finished all the questions in the survey, press Continue here."
+    );
+    addButton(host, "Continue", () => done());
+  });
 }
 
 // Asked once, after every condition has been met. Parts are named by position because
@@ -459,7 +495,9 @@ async function runPart(context, session, condition, partNumber, totalParts) {
   metrics.record("actual_elapsed_ms", actualMs);
 
   current.stage = "form";
-  const responses = await collectResponses(context, { condition, partNumber, actualMs });
+  const responses = await collectResponses(context, {
+    condition, partNumber, totalParts, actualMs, questionnaires: session.settings.questionnaires,
+  });
   for (const [key, value] of Object.entries(responses)) {
     metrics.record(key, value);
   }
@@ -469,10 +507,14 @@ async function runPart(context, session, condition, partNumber, totalParts) {
 module.exports.run = async function run(context) {
   current = { metrics: null, completedAll: false, stage: "start", trial: 0, condition: null };
 
-  const participantId = await askParticipantId(context);
+  const setup = await askSetup(context);
+  const participantId = setup.id;
   const order = getConditionOrder(participantId);
   const total = order.length;
-  const session = store.create(participantId, order, { ...config, tlxSteps: forms.tlxSteps });
+  // the choice made on the setup screen replaces the configured one in the saved settings
+  const session = store.create(participantId, order, {
+    ...config, questionnaires: setup.questionnaires, tlxSteps: forms.tlxSteps,
+  });
 
   current.stage = "instructions";
   await showInstructions(context, total, config.requestsPerCondition);
@@ -491,8 +533,9 @@ module.exports.run = async function run(context) {
     for (let i = 0; i < total; i++) {
       await runPart(context, session, order[i], i + 1, total);
     }
-    // a preference only means something when there was more than one condition to compare
-    if (total > 1) {
+    // a preference only means something when there was more than one condition to compare;
+    // with external questionnaires it is asked in the survey
+    if (total > 1 && setup.questionnaires !== "external") {
       current.stage = "preference";
       const part = await showPreference(context, total);
       session.preferred_part = part;

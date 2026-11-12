@@ -42,6 +42,7 @@ Settings in `src/config.json`:
 - `fillerTexts`: the fixed list of filler lines, used in turn. `fillerInsideDelay` decides whether the line plays inside the wait or before it.
 - `greetingText`: spoken once before the first part, the same in every session.
 - `replyMaxMs`: the longest a spoken line may take before the session moves on without it.
+- `questionnaires`: `app` asks the wait estimate, NASA-TLX, SUS, the willingness rating and the preference on screen. `external` leaves all of them to a survey on the participant's own device: after each part the screen holds until the participant returns, and the session file then holds the measured waits only. The setup screen starts on this value and can change it for one session; the saved session records which was used.
 
 The NASA-TLX scales use the number of steps set in `src/questionnaire.json`. Answers are stored on 0 to 100 whatever that number is.
 
